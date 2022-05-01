@@ -3,6 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Book;
+use App\Models\Chapter;
+use App\Http\Controllers\ChapterController;
+use Validator;
+use Exception;
 
 class BookController extends Controller
 {
@@ -75,7 +80,15 @@ class BookController extends Controller
         } 
 
         else{
-            //we are allowing duplicate chapter titles
+            $book = Book::where('title', request->input('title'))->first();
+
+            if($book){
+                return response()->json([
+                    'status' => -1,
+                    'message' =>"A book with this title already exists. Please use a different one."
+                ], 400); 
+            }
+
             $selectedBook->title = request->input('title');
 
             $selectedBook->save();

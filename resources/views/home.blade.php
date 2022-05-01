@@ -6,7 +6,6 @@
 
 @section('content')
 
-{{dd(Auth::user())}}
 <div class="container mt-5">
     <div class="p-4 p-md-5 mb-3 text-white rounded bg-dark">
         <div class="row">  
