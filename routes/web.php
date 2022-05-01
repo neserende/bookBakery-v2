@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\ChapterController;
+use App\Http\Controllers\NoteController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -22,7 +24,7 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::get('/mybooks/{book_id}' , [BookController::class, 'index']); //display an existing book
-Route::post('/mybooks/{book_id}' , [BookController::class, 'store']); //create a new book and display???
+Route::post('/mybooks/addBook' , [BookController::class, 'store']); //create a new book and display???
 
 Route::get('/mybooks/{book_id}/{chapter_id}', [ChapterController::class, 'getChapter']); //return an already existing chapter's info
 Route::post('/mybooks/{book_id}/addChapter' , [ChapterController::class, 'store']);

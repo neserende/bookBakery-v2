@@ -6,6 +6,7 @@
 
 @section('content')
 
+{{dd(Auth::user())}}
 <div class="container mt-5">
     <div class="p-4 p-md-5 mb-3 text-white rounded bg-dark">
         <div class="row">  
@@ -93,7 +94,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form id="addBookForm" method="POST">
+          <form id="addBookForm" method="POST" action="/mybooks/addBook">
             @csrf
             <div class="form-group">
               <label for="bookName">Title:</label>
@@ -112,7 +113,7 @@
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Back</button>
-            <a href="/mybooks/book1" class="btn btn-info text-light" type="submit">Start Writing!<a/>
+            <a href="/mybooks/1" class="btn btn-info text-light" type="submit">Start Writing!<a/>
         </div>
         </div>
     </div>
