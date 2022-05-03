@@ -11,19 +11,19 @@ use Exception;
 
 class BookController extends Controller
 {
-    public function __construct(){
-        $this->middleware('auth');
-    }
+    // public function __construct(){
+    //     $this->middleware('auth', []);
+    // }
 
-    public function index(){
-
-        //call getChapterTitles
-        return view('write', ['chapterTitles' => $chapterTitles]);
+    public function index($book_id){
+        $book = Book::findOrFail($book_id);
+        return view('write', ['book' => $book, 'chapterTitles' => BookController::getChapterTitles($book_id)]);
     }
 
     public function store(Request $request){
+
         try{
-            $validator = Validator::make($request->all, [
+            $validator = Validator::make($request->all(), [
                 'title' => 'required',
                 'author_name' => 'required',
                 'summary' => 'required'
@@ -43,7 +43,9 @@ class BookController extends Controller
                     ], 400); 
                 }
 
+                
                 $book = Book::create([
+                    'user_id' => auth()->user()->id,
                     'title' => $request->title, 
                     'author_name' => $request->author_name,
                     'summary' => $request->summary
@@ -55,7 +57,7 @@ class BookController extends Controller
                     'body' => 'Start writing!'
                 ]);
 
-                index();
+                BookController::index();
             }
         } catch(Exception $e){
             dd($e);
@@ -72,7 +74,7 @@ class BookController extends Controller
     public function updateTitle($id){
         $selectedBook = Book::findOrFail($id);
         $validator = Validator::make(request()->all(), [
-            'title' => 'required',
+            'title' => 'required'
         ]);
 
         if(!$validator->passes()){
@@ -105,7 +107,7 @@ class BookController extends Controller
     public function updateAuthorName($id){
         $selectedBook = Book::findOrFail($id);
         $validator = Validator::make(request()->all(), [
-            'author_name' => 'required',
+            'author_name' => 'required'
         ]);
 
         if(!$validator->passes()){
@@ -130,7 +132,7 @@ class BookController extends Controller
     public function updateSummary($id){
         $selectedBook = Book::findOrFail($id);
         $validator = Validator::make(request()->all(), [
-            'summary' => 'required',
+            'summary' => 'required'
         ]);
 
         if(!$validator->passes()){
@@ -150,18 +152,18 @@ class BookController extends Controller
         }
     }
 
-    public function numOfChapters($id){
+    public static function numOfChapters($id){
         //currently not exluding special chapters like preface and end notes etc
         $selectedBook = Book::findOrFail($id);
         $allChapters = $selectedBook->chapters; 
         return sizeof($allChapters);
     }
 
-    private function getChapterTitles($id){
+    public function getChapterTitles($id){
         $selectedBook = Book::findOrFail($id);
         $allChapters = $selectedBook->chapters; 
         
-        foreach ($chapters as $currChapter){
+        foreach ($allChapters as $currChapter){
             $chapterTitles[$currChapter->id] = $currChapter->title;
         }
 
