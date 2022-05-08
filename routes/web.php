@@ -36,7 +36,7 @@ Route::get('/mybooks/{book_id}/{chapter_id}/getAllNotes', [NoteController::class
 Route::post('/mybooks/{book_id}/{chapter_id}/addNewNote', [NoteController::class, 'store']);
 Route::post('/mybooks/{book_id}/{chapter_id}/{note_id}', [NoteController::class, 'update']);
 
-Route::get('/mybooks/publish', function(){
+Route::get('/publish', function(){
     return view('publish');
 });
 

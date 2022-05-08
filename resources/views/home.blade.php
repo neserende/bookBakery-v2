@@ -34,7 +34,7 @@
   </div>  
   <div class="row justify-content-between mb-3">
     <div class="col-4 lead">
-      x books
+      {{sizeof($books)}} book(s)
     </div>
     <div class="col-4">
       <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addBookModal" id="newBookButton">Add A New Book</button>
