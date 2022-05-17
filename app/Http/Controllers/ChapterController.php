@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Chapter;
 use App\Models\Book;
 use App\Models\Note;
+use Validator;
+use Exception;
 
 class ChapterController extends Controller
 {
@@ -48,8 +50,8 @@ class ChapterController extends Controller
         return $selectedChapter;
     }
 
-    public function updateBody($id){
-        $selectedChapter = Chapter::findOrFail($id);
+    public function updateBody($book_id, $chapter_id){
+        $selectedChapter = Chapter::findOrFail($chapter_id);
         $validator = Validator::make(request()->all(), [
             'body' => 'required',
         ]);
@@ -59,7 +61,7 @@ class ChapterController extends Controller
         } 
 
         else{
-            $selectedChapter->body = request->input('body');
+            $selectedChapter->body = request()->input('body');
 
             $selectedChapter->save();
 
@@ -82,7 +84,7 @@ class ChapterController extends Controller
 
         else{
             //we are allowing duplicate chapter titles
-            $selectedChapter->title = request->input('title');
+            $selectedChapter->title = request()->input('title');
 
             $selectedChapter->save();
 

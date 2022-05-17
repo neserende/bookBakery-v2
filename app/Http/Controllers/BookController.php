@@ -57,7 +57,8 @@ class BookController extends Controller
                     'body' => 'Start writing!'
                 ]);
 
-                BookController::index();
+                Storage::makeDirectory('book_id_' + $book->id);
+                BookController::index($book->id);
             }
         } catch(Exception $e){
             dd($e);
@@ -67,6 +68,8 @@ class BookController extends Controller
     public function destroy($id){
         $selectedBook = Book::findOrFail($id);
         $selectedBook->delete;
+
+        Storage::deleteDirectory('book_id_' + $book->id);
 
         return view('/home', 'Book successfully deleted'); //maybe print the message on a modal?
     }
@@ -82,7 +85,7 @@ class BookController extends Controller
         } 
 
         else{
-            $book = Book::where('title', request->input('title'))->first();
+            $book = Book::where('title', request()->input('title'))->first();
 
             if($book){
                 return response()->json([
@@ -116,7 +119,7 @@ class BookController extends Controller
 
         else{
             //we are allowing any type of names so not doing duplicate check
-            $selectedBook->author_name = request->input('author_name');
+            $selectedBook->author_name = request()->input('author_name');
 
             $selectedBook->save();
 
@@ -140,7 +143,7 @@ class BookController extends Controller
         } 
 
         else{
-            $selectedBook->summary = request->input('summary');
+            $selectedBook->summary = request()->input('summary');
 
             $selectedBook->save();
 

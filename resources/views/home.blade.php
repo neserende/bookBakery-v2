@@ -16,7 +16,7 @@
   use App\Http\Controllers\BookController;
 @endphp
 <div class="container mt-5">
-    <div class="p-4 p-md-5 mb-3 text-white rounded bg-dark">
+    <div class="p-4 p-md-5 mb-3 text-white rounded bg-main-dark">
         <div class="row">  
             <div class="col-md-6 px-0">
                 <h1 class="display-4 fst-italic">Daily writing tip</h1>
@@ -45,9 +45,9 @@
     @if ($loop->odd && $loop->last)
     <div class="row mb-2">
       <div class="col-md-6" id="bid{{$book->id}}">
-        <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+        <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative book-card">
           <div class="col p-4 d-flex flex-column position-static">
-            <strong class="d-inline-block mb-2 text-primary">{{$book->author_name}}</strong>
+            <strong class="d-inline-block mb-2  author-name">{{$book->author_name}}</strong>
             <h3 class="mb-0">{{$book->title}}</h3>
             <div class="mb-1 text-muted">{{BookController::numOfChapters($book->id)}} chapter(s)</div>
             <p class="card-text mb-auto">{{$book->summary}}</p>
@@ -65,13 +65,16 @@
     @elseif ($loop->odd)
     <div class="row mb-2">
       <div class="col-md-6">
-        <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+        <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative book-card">
           <div class="col p-4 d-flex flex-column position-static">
-            <strong class="d-inline-block mb-2 text-primary">Author Name</strong>
-            <h3 class="mb-0">Book Name</h3>
-            <div class="mb-1 text-muted">12 chapters</div>
-            <p class="card-text mb-auto">This is the book summary. It is an important section to get reader's attention on your book.</p>
-            <a href="#" class="stretched-link">More</a>
+            <strong class="d-inline-block mb-2  author-name">{{$book->author_name}}</strong>
+            <h3 class="mb-0">{{$book->title}}</h3>
+            <div class="mb-1 text-muted">{{BookController::numOfChapters($book->id)}} chapter(s)</div>
+            <p class="card-text mb-auto">{{$book->summary}}</p>
+            <button type="submit" data-bs-toggle="modal" data-bs-target="#bookInfoModal" class="btn btn-link stretched-link" data-book-id="{{$book->id}}" 
+                    onclick="fillInfoModal('{{$book->title}}','{{$book->author_name}}','{{$book->summary}}')">
+              More
+            </button>
           </div>
           <div class="col-auto d-none d-lg-block">
               <img src="{{ URL::asset('images/book-plant.jpg') }}" alt="" class="bd-placeholder-img" width="200" height="250" preserveAspectRatio="xMidYMid slice" focusable="false">
@@ -80,13 +83,16 @@
       </div>
     @else 
       <div class="col-md-6">
-        <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+        <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative book-card">
           <div class="col p-4 d-flex flex-column position-static">
-            <strong class="d-inline-block mb-2 text-primary">ELSE</strong>
-            <h3 class="mb-0">Book Name</h3>
-            <div class="mb-1 text-muted">12 chapters</div>
-            <p class="card-text mb-auto">This is the book summary. It is an important section to get reader's attention on your book.</p>
-            <a href="#" class="stretched-link">More</a>
+            <strong class="d-inline-block mb-2  author-name">{{$book->author_name}}</strong>
+            <h3 class="mb-0">{{$book->title}}</h3>
+            <div class="mb-1 text-muted">{{BookController::numOfChapters($book->id)}} chapter(s)</div>
+            <p class="card-text mb-auto">{{$book->summary}}</p>
+            <button type="submit" data-bs-toggle="modal" data-bs-target="#bookInfoModal" class="btn btn-link stretched-link" data-book-id="{{$book->id}}" 
+                    onclick="fillInfoModal('{{$book->title}}','{{$book->author_name}}','{{$book->summary}}')">
+              More
+            </button>
           </div>
           <div class="col-auto d-none d-lg-block">
               <img src="{{ URL::asset('images/book-plant.jpg') }}" alt="" class="bd-placeholder-img" width="200" height="250" preserveAspectRatio="xMidYMid slice" focusable="false">
@@ -112,7 +118,7 @@
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Back</button>
-            <a href="/mybooks/book1" class="btn btn-info text-light">Edit Book<a/>
+            <a href="/mybooks/2" class="btn btn-info text-light">Edit Book<a/>
         </div>
         </div>
     </div>

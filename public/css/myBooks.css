@@ -10,3 +10,19 @@
 #newBookButton {
     float: right;
 }
+
+.bg-main-dark {
+    background-color: #1b423f;
+}
+
+.book-card {
+    background-color: #ead7d7;
+}
+
+.author-name {
+    color: #6a2e35;
+}
+
+.modal-content {
+    background-color: #cfdadd;
+}

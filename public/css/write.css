@@ -82,10 +82,11 @@ main {
 #notesScroll,
 #chaptersScroll {
     margin-top: 2em;
+    background-color: #cfdadd;
 }
 
 .tox-tinymce {
-    margin-top: 8em;
+    margin-top: 2em;
     margin-left: 3em;
     margin-right: 3em;
 }
