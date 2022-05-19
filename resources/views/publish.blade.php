@@ -22,7 +22,15 @@
 @section('content')
 <div class="row mb-2">
     <div class="col-md-3">
-        <div class="fs-5 mt-2" >Download button here</div>
+        <div class="fs-2 mt-3" >
+            <button class="btn link mx-2" onclick="sendDownloadRequest();"> 
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-download align-top" viewBox="0 0 16 16">
+                    <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                    <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                </svg> 
+                <span class="fs-2 align-bottom">Download</span>
+            </button>
+        </div>
     <div class="d-flex flex-column align-items-stretch flex-shrink-0 bg-white" id="notesScroll">
         <a href="/" class="d-flex align-items-center flex-shrink-0 p-3 link-dark text-decoration-none border-bottom">
         <span class="fs-5 fw-semibold">Writing tips for you</span>
@@ -186,4 +194,25 @@ Get to market fast. Publishing takes less than 5 minutes and your book appears o
         </div>
     </div>
     </div>
+
+    <script>
+        var headers = {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+        function sendDownloadRequest(){
+            $.ajax({
+                url: '/downloadBook',
+                type: 'get',
+                headers: headers,
+                data: {
+                    _token: $("input[name= _token]").val(), 
+					book_id: 2
+                },
+                success: function(response){
+                    console.log("Download request successfully done."),
+                    console.log(response.result)
+                }
+            });
+        }
+    </script>
 @endsection

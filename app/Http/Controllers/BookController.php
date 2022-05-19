@@ -8,6 +8,11 @@ use App\Models\Chapter;
 use App\Http\Controllers\ChapterController;
 use Validator;
 use Exception;
+use Illuminate\Support\Facades\Storage;
+
+
+use Symfony\Component\Process\Process;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class BookController extends Controller
 {
@@ -54,10 +59,15 @@ class BookController extends Controller
                 Chapter::create([
                     'book_id' => $book->id,
                     'title' => 'New Chapter',
-                    'body' => 'Start writing!'
+                    'body' => '/book_id_' . $book->id . '/first.html'
                 ]);
 
-                Storage::makeDirectory('book_id_' + $book->id);
+                //create directory for the book
+                Storage::makeDirectory('book_id_' . $book->id);
+
+                //store the first chapter in the directory
+                Storage::put('/book_id_' . $book->id . '/first.html', 'Start writing!');
+
                 BookController::index($book->id);
             }
         } catch(Exception $e){
@@ -171,5 +181,21 @@ class BookController extends Controller
         }
 
         return $chapterTitles;
+    }
+
+    public function convertToEpub(){
+        try{
+            $process = new Process(['dir']);
+            $process->run();
+    
+            // executes after the command finishes
+            if (!$process->isSuccessful()) {
+                throw new ProcessFailedException($process);
+            }
+            return response()->json([('status')=> 1, 'result' => $process->getOutput()]);
+        } catch(Exception $e){
+            dd($e);
+        }
+       
     }
 }

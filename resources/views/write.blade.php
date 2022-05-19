@@ -25,7 +25,7 @@
 <div class="d-flex flex-column align-items-stretch flex-shrink-0 col-3" id="chaptersScroll" style="width: 20%">
         <div class="d-flex align-items-center flex-shrink-0 p-3 text-decoration-none border-bottom">
             <span class="fs-5 fw-semibold">{{$book->title}}</span>
-            <button class="btn"><i class="bi bi-plus text-end" width=20px></i>+Add chapter</button>
+            <button class="btn btn-outline-dark mx-3" onclick="createNewChapter({{$book->id}});"><i class="bi bi-plus text-end" width=20px></i>+Add chapter</button>
         </div>
         <div class="list-group list-group-flush border-bottom scrollarea">
             @foreach($chapterTitles as $chapterNumber => $chapterTitle)
@@ -93,6 +93,10 @@
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
 
+
+        function createNewChapter($book_id){
+            
+        }
         function saveChapterBody(){
 
             let book_id = 2;
