@@ -31,6 +31,7 @@ Route::get('/mybooks/{book_id}/{chapter_no}', [ChapterController::class, 'getCha
 Route::post('/mybooks/{book_id}/addChapter' , [ChapterController::class, 'store']);
 Route::post('/mybooks/{book_id}/{chapter_id}/updateChapterBody', [ChapterController::class, 'updateBody']);
 Route::post('/mybooks/{book_id}/{chapter_id}/updateChapterTitle', [ChapterController::class, 'updateTitle']);
+Route::get('/mybooks/{book_id}/{chapter_no}/delete', [ChapterController::class, 'destroy']);
 
 Route::get('/mybooks/{book_id}/{chapter_id}/getAllNotes', [NoteController::class, 'getAllNotes']);
 Route::post('/mybooks/{book_id}/{chapter_id}/addNewNote', [NoteController::class, 'store']);

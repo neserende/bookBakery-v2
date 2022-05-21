@@ -31,16 +31,27 @@
         </div>
         <div class="list-group list-group-flush border-bottom scrollarea" id="chapterList">
             @foreach($chapterTitles as $chapterNumber => $chapterTitle)
-                <a href="javascript:void(0)" 
-                   onclick="selectedChapter(this); displayChapter({{$book->id}});" 
-                    class="list-group-item list-group-item-action py-3 lh-tight"
-                    data-chapter="{{$chapterNumber}}"
-                >
-                    <div class="d-flex w-100 align-items-center justify-content-between">
-                    <strong class="mb-1">Chapter {{$chapterNumber}}</strong>
+                <div class="row justify-content-between align-items-center" id="c_no{{$chapterNumber}}">
+                    <div class="col-7">
+                        <a href="javascript:void(0)" 
+                        onclick="selectedChapter(this); displayChapter({{$book->id}});" 
+                            class="list-group-item list-group-item-action py-3 lh-tight"
+                            data-chapter="{{$chapterNumber}}"
+                        >
+                            <div class="d-flex w-100 align-items-center justify-content-between">
+                            <strong class="mb-1">Chapter {{$chapterNumber}}</strong>
+                            </div>
+                            <div class="col-10 mb-1 small" id="c_no{{$chapterNumber}}_title">{{$chapterTitle}}</div>
+                        </a>
                     </div>
-                    <div class="col-10 mb-1 small">{{$chapterTitle}}</div>
-                </a>
+                    <div class="col-2">
+                        <a href="javascript:void(0)" onclick="selectedChapter(this)" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#editChapterTitleModal"  data-chapter="{{$chapterNumber}}">Edit</a>
+                    </div>
+                    <div class="col-3">
+                        <a href="javascript:void(0)" onclick="selectedChapter(this)" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteChapterModal"  data-chapter="{{$chapterNumber}}">Delete</a>
+                    </div>
+                    
+                </div>
             @endforeach
         </div>
     </div>
@@ -117,13 +128,91 @@
     </div>
     </div>
 
+    <!-- Edit Chapter Title Modal -->
+    <div class="modal fade" id="editChapterTitleModal" tabindex="-1" aria-labelledby="editChapterTitleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="editChapterTitleModalLabel">Change Chapter Title</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form id="editChapterTitleForm" method="POST">
+                @csrf
+                <div class="form-group">
+                    <label for="edit_chapter_title">New chapter title:</label>
+                    <input type="text" class="form-control" id="edit_chapter_title" name="edit_chapter_title">
+                </div>                
+                <br>
+                <button type="button" onclick="changeChapterTitle()" class="btn btn-primary">Save</button>
+            </form>
+        </div>
+        </div>
+    </div>
+    </div>
+
+    
+	<!-- Delete Chapter Modal -->
+    <div class="modal fade" id="deleteChapterModal" tabindex="-1" aria-labelledby="deleteChapterModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="deleteChapterModalLabel">Delete Chapter</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to delete this chapter from your book?</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+            <button type="button" onclick="deleteChapter()" class="btn btn-primary">Yes</button>
+        </div>
+        </div>
+    </div>
+    </div>
+
     <script>
         var headers = {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
+        };
 
         function selectedChapter(e){
             $("body").data("selectedChapter", $(e).data("chapter"));
+        }
+
+        function changeChapterTitle(){
+            let book_id = 1;
+            let chapter_no = $("body").data("selectedChapter");
+            let title = $("#edit_chapter_title").val();
+            $.ajax({
+                url: '/mybooks/' + book_id + '/' + chapter_no + '/updateChapterTitle',
+                type: 'post',
+                headers: headers,
+                data: {
+                    _token: $("input[name= _token]").val(),
+                    title: title
+                },
+                success: function(response){
+                    $("#c_no" + chapter_no + "_title").html(title);
+                    $("#editChapterTitleModal").modal('hide');
+                }              
+            });
+        }
+        function deleteChapter(){
+            let book_id = 1;
+            let chapter_no = $("body").data("selectedChapter");
+            $.ajax({
+                url: '/mybooks/' + book_id + '/' + chapter_no + '/delete',
+                type: 'get',
+                headers: headers,
+                data: {
+                    _token: $("input[name= _token]").val()
+                },
+                success: function(response){
+                    $("#c_no" + chapter_no).remove();
+					$("#deleteChapterModal").modal('hide');
+                }              
+            });
         }
 
         function displayChapter(book_id){
@@ -171,10 +260,10 @@
         function saveChapterBody(){
 
             let book_id = 1;
-            let chapter_id = $("body").data("selectedChapter");
+            let chapter_no = $("body").data("selectedChapter");
             console.log("This is the content:\n" + tinymce.activeEditor.getContent());
             $.ajax({
-                url: '/mybooks/' + book_id + '/' + chapter_id + '/updateChapterBody',
+                url: '/mybooks/' + book_id + '/' + chapter_no + '/updateChapterBody',
                 type: 'post',
                 headers: headers,
                 data: {

@@ -53,18 +53,18 @@ class ChapterController extends Controller
         $selectedChapter = Chapter::where('book_id' , $book_id)
                             ->where('chapter_no', $chapter_no)
                             ->first();
-        // dd($selectedChapter);
         return response()->json([
             'chapter_id' => $selectedChapter->id,
-            // 'chapter_content' => asset('storage/books/book_id_' . $book_id . '/' . $chapter_no . '.html')
             'chapter_content' => Storage::get('/books/book_id_' . $book_id . '/' . $chapter_no . '.html')
         ]);
     }
 
-    public function updateBody($book_id, $chapter_id){
-        $selectedChapter = Chapter::findOrFail($chapter_id);
+    public function updateBody($book_id, $chapter_no){
+        $selectedChapter = Chapter::where('book_id' , $book_id)
+                            ->where('chapter_no', $chapter_no)
+                            ->first();
         try{
-            $url = '/books/book_id_' . request()->book_id . '/' . request()->chapter_id . '.html';
+            $url = '/books/book_id_' . request()->book_id . '/' . request()->chapter_no . '.html';
             //we update the file
             if(request()->body == null)
                 $stringToPut = '\n';
@@ -83,8 +83,11 @@ class ChapterController extends Controller
        
     }
 
-    public function updateTitle($id){
-        $selectedChapter = Chapter::findOrFail($id);
+    public function updateTitle($book_id, $chapter_no){
+        $selectedChapter = Chapter::where('book_id' , $book_id)
+                            ->where('chapter_no', $chapter_no)
+                            ->first();
+
         $validator = Validator::make(request()->all(), [
             'title' => 'required',
         ]);
@@ -102,7 +105,7 @@ class ChapterController extends Controller
             return response()->json([
                 'status' => 1,
                 'title' => $selectedChapter->title, 
-                'id' => $selectedChapter->id
+                'chapter_no' => $selectedChapter->chapter_no
             ]);
         }
     }
@@ -112,8 +115,10 @@ class ChapterController extends Controller
         return json_encode($selectedChapter->notes);
     }
     
-    public function destroy($id){
-        $selectedChapter = Chapter::findOrFail($id);
+    public function destroy($book_id, $chapter_no){
+        $selectedChapter = Chapter::where('book_id' , $book_id)
+                            ->where('chapter_no', $chapter_no)
+                            ->first();
         $selectedChapter->delete();
 
         return response()->json(['success' => 'Chapter has been successfully deleted']);
