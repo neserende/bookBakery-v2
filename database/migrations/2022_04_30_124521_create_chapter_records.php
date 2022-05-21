@@ -19,6 +19,7 @@ return new class extends Migration
             ->constrained()
             ->onUpdate('cascade')
             ->onDelete('cascade');
+            $table->string('chapter_no');
             $table->string('title');
             $table->string('body');
             $table->timestamps();

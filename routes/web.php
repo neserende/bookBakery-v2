@@ -27,7 +27,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::get('/mybooks/{book_id}' , [BookController::class, 'index']); //display an existing book
 Route::post('/mybooks/addBook' , [BookController::class, 'store']); //create a new book and display???
 
-Route::get('/mybooks/{book_id}/{chapter_id}', [ChapterController::class, 'getChapter']); //return an already existing chapter's info
+Route::get('/mybooks/{book_id}/{chapter_no}', [ChapterController::class, 'getChapter']); //return an already existing chapter's info
 Route::post('/mybooks/{book_id}/addChapter' , [ChapterController::class, 'store']);
 Route::post('/mybooks/{book_id}/{chapter_id}/updateChapterBody', [ChapterController::class, 'updateBody']);
 Route::post('/mybooks/{book_id}/{chapter_id}/updateChapterTitle', [ChapterController::class, 'updateTitle']);
@@ -45,5 +45,3 @@ Route::get('/publish', function(){
 Route::get('/mybooks/help' , function(){
     return view('help');
 });
-
-Route::get('/mybooks/format/{book_id}' , [BookController::class, 'index']);

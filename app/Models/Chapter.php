@@ -9,7 +9,7 @@ class Chapter extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'book_id', 'body'];
+    protected $fillable = ['title', 'book_id', 'body', 'chapter_no'];
 
     public function book(){
         return $this->belongsTo(Book::class);

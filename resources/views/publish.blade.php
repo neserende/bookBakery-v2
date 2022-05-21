@@ -208,9 +208,9 @@ Get to market fast. Publishing takes less than 5 minutes and your book appears o
                     _token: $("input[name= _token]").val(), 
 					book_id: 2
                 },
-                success: function(response){
-                    console.log("Download request successfully done."),
-                    console.log(response.result)
+                success: function(){
+                    console.log("Download request successfully done.")
+                    //console.log(response.result)
                 }
             });
         }

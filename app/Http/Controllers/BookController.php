@@ -11,8 +11,8 @@ use Exception;
 use Illuminate\Support\Facades\Storage;
 
 
-use Symfony\Component\Process\Process;
-use Symfony\Component\Process\Exception\ProcessFailedException;
+// use Symfony\Component\Process\Process;
+// use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class BookController extends Controller
 {
@@ -59,14 +59,15 @@ class BookController extends Controller
                 Chapter::create([
                     'book_id' => $book->id,
                     'title' => 'New Chapter',
-                    'body' => '/book_id_' . $book->id . '/first.html'
+                    'chapter_no' => 1,
+                    'body' => '/book_id_' . $book->id . '/1.html'
                 ]);
 
                 //create directory for the book
-                Storage::makeDirectory('book_id_' . $book->id);
+                Storage::makeDirectory('/books/book_id_' . $book->id);
 
                 //store the first chapter in the directory
-                Storage::put('/book_id_' . $book->id . '/first.html', 'Start writing!');
+                Storage::put('/books/book_id_' . $book->id . '/1.html', '<p>Start writing!</p>');
 
                 BookController::index($book->id);
             }
@@ -175,9 +176,10 @@ class BookController extends Controller
     public function getChapterTitles($id){
         $selectedBook = Book::findOrFail($id);
         $allChapters = $selectedBook->chapters; 
-        
+        $chapterTitles = null;
+
         foreach ($allChapters as $currChapter){
-            $chapterTitles[$currChapter->id] = $currChapter->title;
+            $chapterTitles[$currChapter->chapter_no] = $currChapter->title;
         }
 
         return $chapterTitles;
@@ -185,14 +187,17 @@ class BookController extends Controller
 
     public function convertToEpub(){
         try{
-            $process = new Process(['dir']);
-            $process->run();
-    
-            // executes after the command finishes
-            if (!$process->isSuccessful()) {
-                throw new ProcessFailedException($process);
+            $output = 0;
+            $return_var = null;
+            $convertReturn = exec('ebook-convert Alice.html Alice.epub', $output, $return_var);
+            if($convertReturn == null){
+                throw Exception;
             }
-            return response()->json([('status')=> 1, 'result' => $process->getOutput()]);
+            else{
+                // Storage::move('C:\Users\SERIF\laravelProjects\bookBakery-v2\public\Alice.epub', 'new/Alice.epub');
+                return response()->download('Alice.epub');;
+                ///return response()->json([('status')=> 1, 'result' => $output]);
+            }
         } catch(Exception $e){
             dd($e);
         }

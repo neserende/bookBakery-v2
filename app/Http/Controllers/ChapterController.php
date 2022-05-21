@@ -9,17 +9,14 @@ use App\Models\Note;
 use Validator;
 use Exception;
 
+use Illuminate\Support\Facades\Storage;
+
 class ChapterController extends Controller
 {
-    public function index(){
-        //
-    }
-
-    public function store(Request $request, $bookID){
+       public function store(Request $request, $bookID){
         try{
-            $validator = Validator::make($request->all, [
-                'title' => 'required',
-                'body' => 'required'
+            $validator = Validator::make($request->all(), [
+                'title' => 'required'
             ]);
 
             if(!$validator->passes()){
@@ -27,16 +24,23 @@ class ChapterController extends Controller
             } 
             
             else {
+
+                $chapter_no = BookController::numOfChapters($bookID) + 1;
                 $chapter = Chapter::create([
                     'book_id' => $bookID,
+                    'chapter_no' => $chapter_no,
                     'title' => $request->title,
-                    'body' => $request->body
+                    'body' => '/book_id_' . $bookID . '/' . $chapter_no . '.html'
                 ]);
+                
+                //store the chapter in the directory
+                Storage::put('/books/book_id_' . $bookID . '/' . $chapter_no . '.html', '<p>Start writing!</p>');
 
                 return response()->json([
                     'status' => 1,
                     'chapter_title' => $chapter->title, 
-                    'chapter_id' =>  $chapter->chapter_id
+                    'chapter_id' =>  $chapter->chapter_id,
+                    'chapter_no' => $chapter_no
                 ]);
             }
 
@@ -45,31 +49,38 @@ class ChapterController extends Controller
         }
     }
 
-    public function getChapter($id){
-        $selectedChapter = Chapter::findOrFail($id);
-        return $selectedChapter;
+    public function getChapter($book_id, $chapter_no){
+        $selectedChapter = Chapter::where('book_id' , $book_id)
+                            ->where('chapter_no', $chapter_no)
+                            ->first();
+        // dd($selectedChapter);
+        return response()->json([
+            'chapter_id' => $selectedChapter->id,
+            // 'chapter_content' => asset('storage/books/book_id_' . $book_id . '/' . $chapter_no . '.html')
+            'chapter_content' => Storage::get('/books/book_id_' . $book_id . '/' . $chapter_no . '.html')
+        ]);
     }
 
     public function updateBody($book_id, $chapter_id){
         $selectedChapter = Chapter::findOrFail($chapter_id);
-        $validator = Validator::make(request()->all(), [
-            'body' => 'required',
-        ]);
+        try{
+            $url = '/books/book_id_' . request()->book_id . '/' . request()->chapter_id . '.html';
+            //we update the file
+            if(request()->body == null)
+                $stringToPut = '\n';
+            else
+                $stringToPut = request()->body;
 
-        if(!$validator->passes()){
-            return response()->json([('status')=> 0, 'error' => $validator->errors()->toArray()]);
-        } 
+                Storage::put( $url, $stringToPut);
 
-        else{
-            $selectedChapter->body = request()->input('body');
+                return response()->json([
+                    'status' => 1
+                ]);
 
-            $selectedChapter->save();
-
-            return response()->json([
-                'status' => 1,
-                'id' => $selectedChapter->id
-            ]);
-        }
+            } catch(Exception $e){
+                dd($e);
+            }
+       
     }
 
     public function updateTitle($id){
